@@ -18,7 +18,8 @@
 # +--------------------------------------------------------------------------+
 
 from .base import DB2ExecutionContext, DB2Dialect
-from sqlalchemy import processors, types as sa_types, util
+from sqlalchemy import types as sa_types, util
+from sqlalchemy.engine import processors
 from sqlalchemy import __version__ as SA_Version
 from sqlalchemy.exc import ArgumentError
 
@@ -104,7 +105,7 @@ class DB2Dialect_ibm_db(DB2Dialect):
     )
 
     @classmethod
-    def dbapi(cls):
+    def import_dbapi(cls):
         """ Returns: the underlying DBAPI driver module
         """
         import ibm_db_dbi as module
@@ -115,7 +116,7 @@ class DB2Dialect_ibm_db(DB2Dialect):
             statement = statement.split('(', 1)[0].split()[1]
             context._callproc_result = cursor.callproc(statement, parameters)
         else:
-            cursor.execute(statement, parameters)
+            cursor.execute(statement, parameters)SQLAlchemy 2.0 updates
 
     def _get_server_version_info(self, connection):
         return connection.connection.server_info()
@@ -209,8 +210,8 @@ class DB2Dialect_ibm_db(DB2Dialect):
 
     # Checks if the DB_API driver error indicates an invalid connection
     def is_disconnect(self, ex, connection, cursor):
-        if isinstance(ex, (self.dbapi.ProgrammingError,
-                           self.dbapi.OperationalError)):
+        if isinstance(ex, (self.import_dbapi.ProgrammingError,
+                           self.import_dbapi.OperationalError)):
             connection_errors = ('Connection is not active', 'connection is no longer active',
                                  'Connection Resource cannot be found', 'SQL30081N',
                                  'CLI0108E', 'CLI0106E', 'SQL1224N')
