@@ -116,7 +116,7 @@ class DB2Dialect_ibm_db(DB2Dialect):
             statement = statement.split('(', 1)[0].split()[1]
             context._callproc_result = cursor.callproc(statement, parameters)
         else:
-            cursor.execute(statement, parameters)SQLAlchemy 2.0 updates
+            cursor.execute(statement, parameters)
 
     def _get_server_version_info(self, connection):
         return connection.connection.server_info()
